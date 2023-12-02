@@ -17,4 +17,11 @@ FROM mcr.microsoft.com/dotnet/aspnet:7.0
 
 WORKDIR /usr/bin/comet/
 COPY --from=builder /usr/src/comet/out .
-ENTRYPOINT ["dotnet", "Comet.Account/Comet.Account.dll"]
+
+# Copy the wait-for-it script and give it execute permissions
+COPY wait-for-it.sh /wait-for-it.sh
+RUN chmod +x /wait-for-it.sh
+
+# Set the entrypoint to the wait-for-it script
+# The actual command to start the application will be specified in docker-compose.yml
+ENTRYPOINT ["/wait-for-it.sh"]

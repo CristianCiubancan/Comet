@@ -3,7 +3,7 @@ namespace Comet.Network.Security
     using System;
     using System.Text;
     using System.Runtime.CompilerServices; 
-    using Comet.Core.Mathematics;
+    using Comet.Shared.Mathematics;
 
     /// <summary>
     /// This Blowfish cipher is implemented in CFB64 mode for client interoperability on 

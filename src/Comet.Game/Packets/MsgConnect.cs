@@ -73,7 +73,7 @@ namespace Comet.Game.Packets
             Kernel.Clients.TryAdd(auth.AccountID, client);
 
             // Check for an existing character
-            var character = await CharactersRepository.FindAsync(auth.AccountID);
+            var character = await CharacterRepository.FindAsync(auth.AccountID);
             if (character == null)
             {
                 // Create a new character

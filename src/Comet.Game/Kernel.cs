@@ -6,6 +6,10 @@ namespace Comet.Game
     using System.Collections.Concurrent;
     using System.Runtime.Caching;
     using System.Threading.Tasks;
+    using Comet.Game.Services.Processors;
+    using Comet.Shared.Loggers;
+
+
 
     /// <summary>
     /// Kernel for the server, acting as a central core for pools of models and states
@@ -23,7 +27,10 @@ namespace Comet.Game
         // Background services
         public static class Services
         {
-            public static RandomnessService Randomness = new RandomnessService();
+            public static readonly RandomnessService Randomness = new();
+            public static ServerProcessor Processor;
+            public static LogProcessor LogProcessor;
+            
         }
 
         /// <summary>Returns the next random number from the generator.</summary>

@@ -8,6 +8,10 @@
     using Comet.Game.Packets;
     using Comet.Network.RPC;
     using Comet.Network.Security;
+    using Comet.Shared;
+    using Comet.Shared.Loggers;
+
+
 
     /// <summary>
     /// The game server listens for authentication players with a valid access token from
@@ -23,6 +27,12 @@
             // claim of ownership, you may include a second copyright above the existing
             // copyright. Do not remove completely to comply with software license. The
             // project name and version may be removed or changed.
+            Kernel.Services.LogProcessor = new LogProcessor(CancellationToken.None);
+            _ = Kernel.Services.LogProcessor.StartAsync(CancellationToken.None);
+
+            LogFactory.Initialize(Kernel.Services.LogProcessor, "Canyon.Game");
+
+
             Console.Title = "Comet, Game Server";
             Console.WriteLine();
             Console.WriteLine("  Comet: Game Server");
@@ -36,12 +46,14 @@
             {
                 Console.WriteLine("Invalid server configuration file");
                 return;
+            } else {
+                ServerDbContext.Initialize(config.Database);
             }
 
             // Initialize the database
             Console.WriteLine("Initializing server...");
             MsgConnect.StrictAuthentication = config.Authentication.StrictAuthPass;
-            ServerDbContext.Configuration = config.Database;
+            ServerConfiguration.Configuration = new ServerConfiguration(args);
             if (!ServerDbContext.Ping())
             {
                 Console.WriteLine("Invalid database configuration");

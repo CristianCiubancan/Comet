@@ -29,7 +29,6 @@ services:
   account:
     container_name: comet-account
     image: comet/server
-    entrypoint: dotnet ./Comet.Account/Comet.Account.dll /Database:Hostname=comet-db
     build: 
       context: .
       args:
@@ -39,10 +38,13 @@ services:
       - frontend
     ports:
       - 9960:9960
+    depends_on:
+      - db
+    entrypoint: ["/wait-for-it.sh", "comet-db:3306", "--"]
+    command: ["dotnet", "./Comet.Account/Comet.Account.dll", "/Database:Hostname=comet-db"]
 
   game:
     image: comet/server
-    entrypoint: dotnet ./Comet.Game/Comet.Game.dll /Database:Hostname=comet-db
     build: 
       context: .
       args:
@@ -52,3 +54,7 @@ services:
       - frontend
     ports:
       - 5816:5816
+    depends_on:
+      - db
+    entrypoint: ["/wait-for-it.sh", "comet-db:3306", "--"]
+    command: ["dotnet", "./Comet.Game/Comet.Game.dll", "/Database:Hostname=comet-db"]
