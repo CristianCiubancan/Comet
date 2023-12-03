@@ -4,10 +4,11 @@ namespace Comet.Game.Packets
     using System.IO;
     using System.Threading.Tasks;
     using Comet.Database.Entities;
-
     using Comet.Game.Database.Repositories;
     using Comet.Game.States;
     using Comet.Network.Packets;
+    using Comet.Shared;
+    using static Comet.Game.Packets.MsgTalk;
 
     /// <remarks>Packet Type 1001</remarks>
     /// <summary>
@@ -82,12 +83,17 @@ namespace Comet.Game.Packets
             }
 
             // Create the character
-            // var character = new DbCharacter(client.Creation.AccountID, this.CharacterName);
             var character = new DbCharacter();
             character.AccountIdentity = client.Creation.AccountID;
             character.Name = this.CharacterName;
             character.Profession = (byte)this.Class;
-            character.Mesh = this.Mesh;
+
+            // Generate a random look for the character
+            var Avatar = this.Mesh < 1005 
+                ? await Kernel.NextAsync(1, 49) 
+                : await Kernel.NextAsync(201, 249);
+            var calculatedMesh = this.Mesh + (Avatar * 10000);
+            character.Mesh = (uint)calculatedMesh;
             character.Silver = 1000;
             character.Level = 1;
             character.MapID = 1010;
@@ -103,12 +109,8 @@ namespace Comet.Game.Packets
                 + (character.Spirit * 3)
                 + (character.Vitality * 24));
             character.ManaPoints = (ushort)(character.Spirit * 5);
-            // character.FirstLogin = DateTime.UtcNow;
+            character.LoginTime = DateTime.UtcNow;
 
-            // Generate a random look for the character
-            character.Mesh = (ushort)(character.Mesh < 1005 
-                ? await Kernel.NextAsync(1, 49) 
-                : await Kernel.NextAsync(201, 249));
             character.Hairstyle = (ushort)(
                 (await Kernel.NextAsync(3, 9) * 100) + MsgRegister.Hairstyles[
                  await Kernel.NextAsync(0, MsgRegister.Hairstyles.Length)]);

@@ -1,8 +1,7 @@
 namespace Comet.Game.Packets
 {
-    using System;
-
     using System.Collections.Generic;
+    using System.IO;
     using Comet.Database.Entities;
     using Comet.Game.States;
     using Comet.Network.Packets;
@@ -15,140 +14,105 @@ namespace Comet.Game.Packets
     /// </summary>
     public sealed class MsgUserInfo : MsgBase<Client>
     {
-        /// <summary>
-        ///     Instantiates a new instance of <see cref="MsgUserInfo" /> using data fetched
-        ///     from the database and stored in <see cref="DbCharacter" />.
-        /// </summary>
-        /// <param name="character">Character info from the database</param>
-        public MsgUserInfo(Character character)
-        {
-            Identity = character.Identity;
-            AppearenceType = character.CurrentLayout;
-            Mesh = character.Mesh;
-            Hairstyle = character.Hairstyle;
-            Silver = character.Silvers;
-            ConquerPoints = character.ConquerPoints;
-            Experience = character.Experience;
-            Strength = character.Strength;
-            Agility = character.Speed;
-            Vitality = character.Vitality;
-            Spirit = character.Spirit;
-            AttributePoints = character.AttributePoints;
-            HealthPoints = character.Life;
-            ManaPoints = (ushort)character.Mana;
-            KillPoints = character.PkPoints;
-            Level = character.Level;
-            CurrentClass = character.Profession;
-            PreviousClass = character.PreviousProfession;
-            FirstClass = character.FirstProfession;
-            Rebirths = character.Metempsychosis;
-            QuizPoints = character.QuizPoints;
-            PrivilegeFlag = (int)character.Flag;
-            ConquerPointsBound = character.ConquerPointsBound;
-            // EnlightenPoints = (ushort)character.EnlightenPoints;
-            // EnlightenExp = character.EnlightenExperience;
-            VipLevel = character.BaseVipLevel;
-            // CurrentAstProf = (byte)character.AstProfType;
-            // AstProfInfo = (int)character.AstProfRanks;
-            UserTitle = character.TitleSelect;
-            Country = (ushort)character.Nationality;
-            // RidePetPoints = (int)character.HorseRacingPoints;
-            CharacterName = character.Name;
-            SpouseName = character.MateName;
-        }
-
-        public uint Identity { get; set; }
-        public ushort AppearenceType { get; set; }
+        // Packet Properties
+        public uint CharacterID { get; set; }
         public uint Mesh { get; set; }
         public ushort Hairstyle { get; set; }
-        public ulong Silver { get; set; }
-        public uint ConquerPoints { get; set; }
+        public uint Silver { get; set; }
+        public uint Jewels { get; set; }
         public ulong Experience { get; set; }
-        public uint Virtue { get; set; }
         public ushort Strength { get; set; }
         public ushort Agility { get; set; }
         public ushort Vitality { get; set; }
         public ushort Spirit { get; set; }
         public ushort AttributePoints { get; set; }
-        public uint HealthPoints { get; set; }
+        public ushort HealthPoints { get; set; }
         public ushort ManaPoints { get; set; }
         public ushort KillPoints { get; set; }
         public byte Level { get; set; }
         public byte CurrentClass { get; set; }
         public byte PreviousClass { get; set; }
         public byte Rebirths { get; set; }
-        public byte FirstClass { get; set; }
-        public byte Nobility { get; set; }
+        public byte AncestorClass { get; set; }
         public uint QuizPoints { get; set; }
-        public int PrivilegeFlag { get; set; }
         public ushort EnlightenPoints { get; set; }
-        public uint EnlightenExp { get; set; }
-        public uint VipLevel { get; set; }
-        public ushort UserTitle { get; set; }
-        public uint ConquerPointsBound { get; set; }
-        public byte CurrentAstProf { get; set; }
-        public int AstProfInfo { get; set; }
-        public int RidePetPoints { get; set; }
-        public ushort Country { get; set; }
+        public uint VIPLevel { get; set; }
         public string CharacterName { get; set; }
         public string SpouseName { get; set; }
 
         /// <summary>
-        ///     Encodes the packet structure defined by this message class into a byte packet
-        ///     that can be sent to the client. Invoked automatically by the client's send
-        ///     method. Encodes using byte ordering rules interoperable with the game client.
+        /// Instantiates a new instance of <see cref="MsgUserInfo"/> using data fetched
+        /// from the database and stored in <see cref="DbCharacter"/>.
+        /// </summary>
+        /// <param name="character">Character info from the database</param>
+        public MsgUserInfo(DbCharacter character)
+        {
+            base.Type = PacketType.MsgUserInfo;
+            this.CharacterID = character.Identity;
+            this.Mesh = character.Mesh;
+            this.Hairstyle = character.Hairstyle;
+            this.Silver = (uint)character.Silver;
+            this.Jewels = character.ConquerPoints;
+            this.Experience = character.Experience;
+            this.Strength = character.Strength;
+            this.Agility = character.Agility;
+            this.Vitality = character.Vitality;
+            this.Spirit = character.Spirit;
+            this.AttributePoints = character.AttributePoints;
+            this.HealthPoints = (ushort)character.HealthPoints;
+            this.ManaPoints = character.ManaPoints;
+            this.KillPoints = character.KillPoints;
+            this.Level = character.Level;
+            this.CurrentClass = character.Profession;
+            this.PreviousClass = character.PreviousProfession;
+            this.AncestorClass = character.FirstProfession;
+            this.Rebirths = character.Rebirths;
+            this.EnlightenPoints = (ushort)character.MentorOpportunity;
+            this.QuizPoints = character.QuizPoints;
+            this.VIPLevel = character.VipValue;
+            this.CharacterName = character.Name;
+            this.SpouseName = "None";
+        }
+
+        /// <summary>
+        /// Encodes the packet structure defined by this message class into a byte packet
+        /// that can be sent to the client. Invoked automatically by the client's send 
+        /// method. Encodes using byte ordering rules interoperable with the game client.
         /// </summary>
         /// <returns>Returns a byte packet of the encoded packet.</returns>
         public override byte[] Encode()
         {
-            using var writer = new PacketWriter();
-            writer.Write((ushort)PacketType.MsgUserInfo); // 2
-            writer.Write(Environment.TickCount); // 4
-            writer.Write(Identity); // 8
-            writer.Write(AppearenceType); // 12 Appearence Type
-            writer.Write(Mesh); // 14
-            writer.Write(Hairstyle); // 18
-            writer.Write(Silver); // 20
-            writer.Write(ConquerPoints); // 28
-            writer.Write(Experience); // 32
-            writer.Write((ulong)0); // 40
-            writer.Write((uint)0); // 48
-            writer.Write(Virtue); // 52 Virtue
-            writer.Write((uint)0); // 56
-            writer.Write(Strength); // 60
-            writer.Write(Agility); // 62
-            writer.Write(Vitality); // 64
-            writer.Write(Spirit); // 66
-            writer.Write(AttributePoints); // 68
-            writer.Write(HealthPoints); // 70
-            writer.Write(ManaPoints); // 74
-            writer.Write(KillPoints); // 76 
-            writer.Write(Level); // 78
-            writer.Write(CurrentClass); // 79
-            writer.Write(FirstClass); // 80
-            writer.Write(PreviousClass); // 81
-            writer.Write(Nobility); // 82
-            writer.Write(Rebirths); // 83
-            writer.Write(true); // 84 Name Displayed
-            writer.Write(QuizPoints); // 85
-            writer.Write(PrivilegeFlag); // 89
-            writer.Write(EnlightenPoints); // 93
-            writer.Write(EnlightenExp); // 95
-            writer.Write((ushort)0); // 99
-            writer.Write(VipLevel); // 101
-            writer.Write(UserTitle); // 105
-            writer.Write(ConquerPointsBound); // 107
-            writer.Write(CurrentAstProf); // 111
-            writer.Write(0); // 112 AstProfInfo (level + idk)
-            writer.Write(AstProfInfo); // 116 
-            writer.Write(RidePetPoints); // 120
-            writer.Write(Country); // 124
-            writer.Write(0); // 126
-            writer.Write(new List<string> // 130
-            {
-                CharacterName,
-                "None", // nop
-                SpouseName
+            var writer = new PacketWriter();
+            writer.Write((ushort)base.Type);
+            writer.Write(this.CharacterID);
+            writer.Write(this.Mesh);
+            writer.Write(this.Hairstyle);
+            writer.Write(this.Silver);
+            writer.Write(this.Jewels);
+            writer.Write(this.Experience);
+            writer.Write((ulong)0);
+            writer.Write((ulong)0);
+            writer.Write((uint)0);
+            writer.Write(this.Strength);
+            writer.Write(this.Agility);
+            writer.Write(this.Vitality);
+            writer.Write(this.Spirit);
+            writer.Write(this.AttributePoints);
+            writer.Write(this.HealthPoints);
+            writer.Write(this.ManaPoints);
+            writer.Write(this.KillPoints);
+            writer.Write(this.Level);
+            writer.Write(this.CurrentClass);
+            writer.Write(this.PreviousClass);
+            writer.Write(this.Rebirths);
+            writer.Write(this.AncestorClass);
+            writer.Write(this.QuizPoints);
+            writer.Write(this.EnlightenPoints);
+            writer.BaseStream.Seek(8, SeekOrigin.Current);
+            writer.Write((uint)this.VIPLevel);
+            writer.Write(new List<string>{
+                this.CharacterName,
+                this.SpouseName
             });
             return writer.ToArray();
         }
