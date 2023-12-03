@@ -36,25 +36,25 @@
         [Column("life")] public virtual uint HealthPoints { get; set; }
         [Column("mana")] public virtual ushort ManaPoints { get; set; }
         [Column("pk")] public virtual ushort KillPoints { get; set; }
-        [Column("first_login")] public virtual uint FirstLogin { get; set; }
+        // [Column("first_login")] public virtual uint FirstLogin { get; set; }
         [Column("donation")] public ulong Donation { get; set; }
-        [Column("last_login")] public virtual uint LoginTime { get; set; }
-        [Column("last_logout")] public virtual uint LogoutTime { get; set; }
-        [Column("last_logout2")] public virtual uint LogoutTime2 { get; set; } // Offline TG
+        [Column("last_login")] public virtual DateTime LoginTime { get; set; }
+        [Column("last_logout")] public virtual DateTime LogoutTime { get; set; }
+        [Column("last_logout2")] public virtual DateTime LogoutTime2 { get; set; } // Offline TG
         [Column("online_time")] public virtual int OnlineSeconds { get; set; }
         [Column("auto_allot")] public virtual byte AutoAllot { get; set; }
         [Column("mete_lev")] public virtual uint MeteLevel { get; set; }
         [Column("mete_lev2")] public virtual uint MeteLevel2 { get; set; }
         [Column("exp_ball_usage")] public virtual uint ExpBallUsage { get; set; }
-        [Column("god_status")] public virtual uint HeavenBlessing { get; set; }
+        [Column("god_status")] public virtual DateTime HeavenBlessing { get; set; }
         [Column("task_mask")] public virtual uint TaskMask { get; set; }
         [Column("home_id")] public virtual uint HomeIdentity { get; set; }
         [Column("lock_key")] public virtual ulong LockKey { get; set; }
         [Column("auto_exercise")] public virtual ushort AutoExercise { get; set; }
-        [Column("time_of_life")] public virtual uint LuckyTime { get; set; }
+        [Column("time_of_life")] public virtual DateTime LuckyTime { get; set; }
         [Column("vip_value")] public virtual uint VipValue { get; set; }
-        [Column("business")] public virtual uint Business { get; set; }
-        [Column("send_flower_date")] public virtual uint SendFlowerDate { get; set; }
+        [Column("business")] public virtual DateTime Business { get; set; }
+        [Column("send_flower_date")] public virtual DateTime SendFlowerDate { get; set; }
         [Column("flower_r")] public virtual uint FlowerRed { get; set; }
         [Column("flower_w")] public virtual uint FlowerWhite { get; set; }
         [Column("flower_lily")] public virtual uint FlowerOrchid { get; set; }

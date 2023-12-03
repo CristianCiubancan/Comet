@@ -23,6 +23,8 @@ services:
       MARIADB_ROOT_PASSWORD: password
     networks:
       - backend
+    # ports:
+    #   - 3307:3306
     volumes:
       - ./sql/data:/var/lib/mysql
 

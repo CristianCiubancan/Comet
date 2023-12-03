@@ -174,7 +174,7 @@ namespace Comet.Game.States
             this.HealthPoints = character.HealthPoints;
             this.ManaPoints = character.ManaPoints;
             this.KillPoints = character.KillPoints;
-            this.FirstLogin = character.FirstLogin;
+            // this.FirstLogin = character.FirstLogin;
             this.Donation = character.Donation;
             this.LoginTime = character.LoginTime;
             this.LogoutTime = character.LogoutTime;
