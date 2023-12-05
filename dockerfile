@@ -22,6 +22,10 @@ COPY --from=builder /usr/src/comet/out .
 COPY wait-for-it.sh /wait-for-it.sh
 RUN chmod +x /wait-for-it.sh
 
+# Copy GameMap.dat file
+COPY src/Comet.Game/ini/GameMap.dat /usr/bin/comet/ini/GameMap.dat
+# Copy map directory
+COPY src/Comet.Game/ini/map /usr/bin/comet/map
 # Set the entrypoint to the wait-for-it script
 # The actual command to start the application will be specified in docker-compose.yml
 ENTRYPOINT ["/wait-for-it.sh"]
